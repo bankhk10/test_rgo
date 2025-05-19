@@ -1,0 +1,48 @@
+version: "3.8" # ระบุเวอร์ชันของ Docker Compose
+
+services:
+  frontend:
+    build:
+      context: ./frontend # Path ไปยังโฟลเดอร์ที่มี Dockerfile ของ Frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80" # Map Port 3000 ของ Host เข้ากับ Port 80 ของ Container (Nginx)
+    container_name: product-frontend
+    restart: unless-stopped
+    # (Optional) หากคุณต้องการให้ Frontend รอ Backend ก่อนเริ่ม (ถ้ามี Backend service)
+    # depends_on:
+    #   - backend # ชื่อ Service ของ Backend ของคุณ
+
+  # คุณสามารถเพิ่ม services อื่นๆ ที่นี่ได้ในอนาคต เช่น backend, database
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8080:8080" # ตัวอย่าง Port สำหรับ Backend
+  #   container_name: product-backend
+  #   restart: unless-stopped
+  #   environment:
+  #     # กำหนด Environment Variables ที่นี่
+  #     - NODE_ENV=development
+  #   # volumes:
+  #   #   - ./backend:/app # สำหรับ Development: Mount source code
+  #   #   - /app/node_modules # สำหรับ Development: ป้องกันการเขียนทับ node_modules ใน container
+  #   depends_on:
+  #     - database
+
+  # database:
+  #   image: postgres:14-alpine # หรือ mongo:latest
+  #   ports:
+  #     - "5432:5432" # ตัวอย่าง Port สำหรับ PostgreSQL
+  #   container_name: product-database
+  #   restart: unless-stopped
+  #   environment:
+  #     - POSTGRES_USER=youruser
+  #     - POSTGRES_PASSWORD=yourpassword
+  #     - POSTGRES_DB=productdb
+  #   volumes:
+  #     - product_db_data:/var/lib/postgresql/data
+# (Optional) กำหนด Named Volumes สำหรับ Persistent Data
+# volumes:
+#   product_db_data:
